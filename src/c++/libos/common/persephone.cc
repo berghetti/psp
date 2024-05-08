@@ -8,6 +8,7 @@
 #include <psp/libos/persephone.hh>
 #include <psp/libos/su/NetSu.hh>
 #include <psp/libos/su/MbSu.hh>
+#include <psp/libos/su/AFPSu.hh>
 #include <psp/libos/su/DispatchSu.hh>
 #include <psp/libos/su/RocksdbSu.hh>
 #include <psp/annot.h>
@@ -108,6 +109,9 @@ Psp::Psp(std::string &app_cfg, std::string l) {
                     CreateWorker<MbWorker>(i, &dpt, netw, udp_ctx);
                 } else if (type == "ROCKSDB") {
                     CreateWorker<RdbWorker>(i, &dpt, netw, udp_ctx);
+                }
+                else if (type == "AFP"){
+                    CreateWorker<AFPWorker>(i, &dpt, netw, udp_ctx);
                 }
                 // Update dispatcher
                 dpt.n_workers++;

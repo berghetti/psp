@@ -52,7 +52,7 @@ class PspApp {
         psp = std::make_unique<Psp>(cfg, label);
 
         /* Pin main thread */
-        pin_thread(pthread_self(), 0);
+        pin_thread(pthread_self(), 30);
 
         // If this is a RocksDB app
         Worker *rdb_workers[MAX_WORKERS];

@@ -152,6 +152,7 @@ class Psp {
                 << " (" << wt_str[static_cast<int>(workers[i]->type)] << ") to terminate"
             );
             workers[i]->stop();
+            //exit(1);
         }
     }
 

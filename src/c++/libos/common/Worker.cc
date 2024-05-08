@@ -57,9 +57,16 @@ int Worker::app_work(int status, unsigned long payload) {
 
     // Notify the dispatcher
     if (notify) {
-        unsigned long type = *rte_pktmbuf_mtod_offset(
-            static_cast<rte_mbuf *>((void*)payload), char *, NET_HDR_SIZE + sizeof(uint32_t)
-        );
+        //unsigned long type = *rte_pktmbuf_mtod_offset(
+        //    static_cast<rte_mbuf *>((void*)payload), char *, NET_HDR_SIZE + sizeof(uint32_t)
+        //);
+
+        uint64_t *data = rte_pktmbuf_mtod_offset(
+            static_cast<rte_mbuf *>((void*)payload), uint64_t *, NET_HDR_SIZE);
+
+        // AFP type offset
+        unsigned long type = data[3];
+
         unsigned long notif = (type << 60) ^ rdtscp(NULL);
         if (unlikely(lrpc_ctx.push(notif, 0) == EAGAIN)) {
             PSP_DEBUG("Worker " << worker_id << " could not signal work done to dpt");
