@@ -15,7 +15,7 @@ cpus:
 - 26
 - 28
 log_dir: /tmpfs/experiments/
-n_resas: 0
+#n_resas: 0
 net_workers:
 - dp: DARC
   ip: 192.168.10.50
@@ -37,6 +37,7 @@ network:
   mac: 'a:b:c:d:e:f' # this is hard coded
 requests:
 - type: SHORT
+- type: LONG
 workers:
   number: 14
   type: AFP
