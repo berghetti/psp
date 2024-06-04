@@ -34,7 +34,7 @@ network:
   - maxdml
   - -w
   - '0000:18:00.1'
-  #  mac: 'a:b:c:d:e:f' this is hardcoded
+  mac: 'a:b:c:d:e:f' # this is hard coded
 requests:
 - type: SHORT
 workers:
