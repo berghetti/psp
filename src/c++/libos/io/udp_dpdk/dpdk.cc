@@ -114,6 +114,13 @@ int init_dpdk_port(uint16_t port_id, rte_mempool *mbuf_pool,
         << ", tx rings: " << tx_rings
     );
 
+    struct rte_ether_addr addr = { { 0xA, 0XB, 0xC, 0xD, 0xE, 0xF } };
+    ret = rte_eth_dev_default_mac_addr_set ( port_id, &addr );
+    if ( ret != 0 )
+    rte_exit ( EXIT_FAILURE,
+               "Error to set mac address: %s\n",
+               rte_strerror ( rte_errno ) );
+
     // disable the rx/tx flow control
     struct ::rte_eth_fc_conf fc_conf = {};
     PSP_OK(rte_eth_dev_flow_ctrl_get(port_id, fc_conf));
@@ -352,6 +359,22 @@ int wait_for_link_status_up(uint16_t port_id) {
 int print_link_status(FILE *f, uint16_t port_id, const struct rte_eth_link *link) {
     PSP_NOTNULL(EINVAL, f);
     PSP_TRUE(ERANGE, ::rte_eth_dev_is_valid_port(port_id));
+
+    struct rte_ether_addr addr;
+    int ret = rte_eth_macaddr_get ( port_id, &addr );
+    if ( ret != 0 )
+    rte_exit ( EXIT_FAILURE,
+               "Error to get mac address: %s\n",
+               rte_strerror ( rte_errno ) );
+
+    fprintf(f,"MAC: %02" PRIx8 ":%02" PRIx8 ":%02" PRIx8 ":%02" PRIx8 ":%02" PRIx8
+         ":%02" PRIx8 "\n",
+         addr.addr_bytes[0],
+         addr.addr_bytes[1],
+         addr.addr_bytes[2],
+         addr.addr_bytes[3],
+         addr.addr_bytes[4],
+         addr.addr_bytes[5] ) ;
 
     struct rte_eth_link link2 = {};
     if (NULL == link) {

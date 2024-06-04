@@ -17,7 +17,7 @@ cpus:
 log_dir: /tmpfs/experiments/
 n_resas: 0
 net_workers:
-- dp: CFCFS
+- dp: DARC
   ip: 192.168.10.50
   is_echo: 0
   port: 6789
@@ -34,7 +34,7 @@ network:
   - maxdml
   - -w
   - '0000:18:00.1'
-  mac: '3c:fd:fe:55:ce:c2'
+  #  mac: 'a:b:c:d:e:f' this is hardcoded
 requests:
 - type: SHORT
 workers:
