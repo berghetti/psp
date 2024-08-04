@@ -27,8 +27,10 @@
 #define RX_PREFETCH_STRIDE 2
 
 // app TQ/RQ
-#define INBOUND_Q_LEN 128
-#define OUTBOUND_Q_LEN 128
+//#define INBOUND_Q_LEN 128
+//#define OUTBOUND_Q_LEN 128
+#define INBOUND_Q_LEN 256
+#define OUTBOUND_Q_LEN 256
 
 // Offloads
 #define OFFLOAD_IP_CKSUM

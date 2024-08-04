@@ -11,6 +11,7 @@
 #include <psp/libos/su/AFPSu.hh>
 #include <psp/libos/su/DispatchSu.hh>
 #include <psp/libos/su/RocksdbSu.hh>
+#include <psp/libos/su/AFP_RocksdbSu.hh>
 #include <psp/annot.h>
 
 std::string log_dir = "./";
@@ -112,6 +113,9 @@ Psp::Psp(std::string &app_cfg, std::string l) {
                 }
                 else if (type == "AFP"){
                     CreateWorker<AFPWorker>(i, &dpt, netw, udp_ctx);
+                }
+                else if (type == "AFP_ROCKSDB"){
+                    CreateWorker<AFP_RdbWorker>(i, &dpt, netw, udp_ctx);
                 }
                 // Update dispatcher
                 dpt.n_workers++;
