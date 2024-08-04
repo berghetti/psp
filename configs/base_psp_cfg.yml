@@ -40,4 +40,4 @@ requests:
 - type: LONG
 workers:
   number: 14
-  type: AFP
+  type: AFP_ROCKSDB
