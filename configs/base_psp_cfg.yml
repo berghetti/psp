@@ -28,11 +28,11 @@ network:
   - '2'
   - -l
   - 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30
-  - --master-lcore
+  - --main-lcore
   - 30
   - --file-prefix
   - maxdml
-  - -w
+  - -a
   - '0000:18:00.1'
   mac: 'a:b:c:d:e:f' # this is hard coded
 requests:

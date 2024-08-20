@@ -73,7 +73,7 @@ int UdpContext::prepare_outbound_packet(unsigned long mbuf, rte_mbuf **pkt_out) 
     size_t data_len = (data_offset - data_start);
     size_t total_len = (data_offset - pkt_start);
     
-    eth_hdr->d_addr = eth_hdr->s_addr;
+    eth_hdr->dst_addr = eth_hdr->src_addr;
     udp_hdr->dst_port = udp_hdr->src_port;
     ip_hdr->dst_addr = ip_hdr->src_addr;
 
@@ -92,7 +92,7 @@ int UdpContext::prepare_outbound_packet(unsigned long mbuf, rte_mbuf **pkt_out) 
     ip_hdr->src_addr = ip.s_addr;
     pkt->ol_flags = 0x0;
 #ifdef OFFLOAD_IP_CKSUM
-    pkt->ol_flags |= PKT_TX_IP_CKSUM;
+    //pkt->ol_flags |= PKT_TX_IP_CKSUM;
 #endif
     pkt->l3_len = sizeof(*ip_hdr);
 
@@ -107,7 +107,7 @@ int UdpContext::prepare_outbound_packet(unsigned long mbuf, rte_mbuf **pkt_out) 
     //    udp_hdr->dst_port = remote_port;
     //    ip_hdr->dst_addr = remote_ip.s_addr;
     //}
-    eth_hdr->s_addr = my_mac;
+    eth_hdr->src_addr = my_mac;
     eth_hdr->ether_type = htons(RTE_ETHER_TYPE_IPV4);
     pkt->l2_len = sizeof(*eth_hdr);
 

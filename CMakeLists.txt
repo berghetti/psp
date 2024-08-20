@@ -3,7 +3,7 @@ project (Persephone C CXX)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/scripts/cmake")
 
-include(dpdk)
+#include(dpdk)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
@@ -25,9 +25,31 @@ function(target_add_fake_work TARGET)
     target_link_libraries(${TARGET} fake-work)
 endfunction(target_add_fake_work)
 
+set(DPDK_DIR ${CMAKE_SOURCE_DIR}/../afp/deps/dpdk)
+set(ENV{PKG_CONFIG_PATH} "${DPDK_DIR}/build/lib/x86_64-linux-gnu/pkgconfig/")
+execute_process(
+    COMMAND pkg-config --cflags libdpdk
+    OUTPUT_VARIABLE DPDK_CFLAGS
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+execute_process(
+    COMMAND pkg-config --libs --static libdpdk
+    OUTPUT_VARIABLE DPDK_LDFLAGS
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+function(target_add_dpdk TARGET)
+    target_include_directories(${TARGET} PUBLIC ${DPDK_DIR}/build/include/)
+    set_target_properties(${TARGET} PROPERTIES
+        COMPILE_FLAGS ${DPDK_CFLAGS}
+        LINK_FLAGS ${DPDK_LDFLAGS}
+    )
+endfunction(target_add_dpdk)
+
 # RocksDB flags
-set(RDB_DIR ${CMAKE_SOURCE_DIR}/submodules/rocksdb)
-set(RDB_LIBRARIES gflags snappy z lz4 bz2 zstd jemalloc)
+set(RDB_DIR ${CMAKE_SOURCE_DIR}/../afp/deps/rocksdb)
+set(RDB_LIBRARIES gflags snappy z lz4 bz2 zstd)
 function(target_add_rocksdb TARGET)
     target_include_directories(${TARGET} PUBLIC ${RDB_DIR}/include/rocksdb)
     target_link_libraries(${TARGET} ${RDB_DIR}/librocksdb.a)
