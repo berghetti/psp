@@ -17,12 +17,10 @@ set(CMAKE_CXX_FLAGS_RELEASE ${RELEASE_CFLAGS})
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-set(FAKE_WORK_DIR ${CMAKE_SOURCE_DIR}/submodules/fake_work)
-add_library(fake-work SHARED IMPORTED GLOBAL)
-set_target_properties(fake-work PROPERTIES IMPORTED_LOCATION ${FAKE_WORK_DIR}/libfake.so)
+set(FAKE_WORK_DIR ${CMAKE_SOURCE_DIR}/../afp/deps/fake-work)
 function(target_add_fake_work TARGET)
     target_include_directories(${TARGET} PUBLIC ${FAKE_WORK_DIR})
-    target_link_libraries(${TARGET} fake-work)
+    target_link_libraries(${TARGET} ${FAKE_WORK_DIR}/libfakework.a)
 endfunction(target_add_fake_work)
 
 set(DPDK_DIR ${CMAKE_SOURCE_DIR}/../afp/deps/dpdk)

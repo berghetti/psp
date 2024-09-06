@@ -12,16 +12,6 @@ AFPWorker::setup ()
   return 0;
 }
 
-#define ITERATIONS_BY_US 2620
-
-__attribute__ ((noinline)) void
-afp_fake_work_ns (unsigned target_ns)
-{
-  unsigned end = target_ns * ITERATIONS_BY_US / 1000;
-  for (unsigned i = 0; i < end; i++)
-    asm volatile("nop");
-}
-
 int
 AFPWorker::process_request (unsigned long payload)
 {
@@ -29,11 +19,11 @@ AFPWorker::process_request (unsigned long payload)
       static_cast<rte_mbuf *> ((void *)payload), uint64_t *, NET_HDR_SIZE);
 
   unsigned request_type = data[3];
-  unsigned service_time_ns = data[4];
+  unsigned service_time_ns = data[5];
 
-  //printf("type: %u sv: %u\n", request_type, service_time_ns);
+  // printf("type: %u sv: %u\n", request_type, service_time_ns);
 
-  afp_fake_work_ns (service_time_ns);
+  fake_work_ns (service_time_ns);
 
   switch (static_cast<ReqType> (request_type))
     {

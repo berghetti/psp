@@ -6,8 +6,8 @@ if [ -z ${PSP_DIR} ]; then
 fi
 
 # Setup synthetic work library
-git submodule update --init ${PSP_DIR}/submodules/fake_work
-make -C ${PSP_DIR}/submodules/fake_work libfake
+#git submodule update --init ${PSP_DIR}/submodules/fake_work
+#make -C ${PSP_DIR}/submodules/fake_work libfake
 
 # Setup RocksDB
 #make -j -C ${PSP_DIR}/submodules/rocksdb static_lib
