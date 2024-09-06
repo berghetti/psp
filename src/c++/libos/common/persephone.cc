@@ -111,11 +111,15 @@ Psp::Psp(std::string &app_cfg, std::string l) {
                 } else if (type == "ROCKSDB") {
                     CreateWorker<RdbWorker>(i, &dpt, netw, udp_ctx);
                 }
-                else if (type == "AFP"){
+                else if (type == "AFP_MB"){
                     CreateWorker<AFPWorker>(i, &dpt, netw, udp_ctx);
                 }
                 else if (type == "AFP_ROCKSDB"){
                     CreateWorker<AFP_RdbWorker>(i, &dpt, netw, udp_ctx);
+                }
+                else{
+                    PSP_WARN("Unknown worker type");
+                    exit(1);
                 }
                 // Update dispatcher
                 dpt.n_workers++;
