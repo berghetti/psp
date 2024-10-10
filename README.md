@@ -9,11 +9,9 @@ Setting up Perséphone
 =====================
 
 ```bash
-./install_requeriments.sh
-# We use PSP_DIR across the setup scripts
 echo "export PSP_DIR=~/psp" >> ~/.bashrc; . ~/.bashrc
-# Clone the repo on the server machine and run the setup script.
 git clone https://github.com/berghetti/psp.git ${PSP_DIR}
+./install_requeriments.sh
 ${PSP_DIR}/scripts/setup/base_setup.sh
 ```
 
