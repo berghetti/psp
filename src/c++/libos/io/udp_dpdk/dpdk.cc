@@ -132,11 +132,11 @@ init_dpdk_port (uint16_t port_id, rte_mempool *mbuf_pool, uint16_t n_tx_rings,
   PSP_INFO ("Started Network port " << port_id << " rx rings: " << rx_rings
                                     << ", tx rings: " << tx_rings);
 
-  struct rte_ether_addr addr = { { 0xA, 0XB, 0xC, 0xD, 0xE, 0xF } };
-  ret = rte_eth_dev_default_mac_addr_set (port_id, &addr);
-  if (ret != 0)
-    rte_exit (EXIT_FAILURE, "Error to set mac address: %s\n",
-              rte_strerror (rte_errno));
+  //struct rte_ether_addr addr = { { 0xA, 0XB, 0xC, 0xD, 0xE, 0xF } };
+  //ret = rte_eth_dev_default_mac_addr_set (port_id, &addr);
+  //if (ret != 0)
+  //  rte_exit (EXIT_FAILURE, "Error to set mac address: %s\n",
+  //            rte_strerror (rte_errno));
 
   // disable the rx/tx flow control
   struct ::rte_eth_fc_conf fc_conf = {};
