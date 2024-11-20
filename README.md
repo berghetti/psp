@@ -10,7 +10,7 @@ Setting up Perséphone
 
 ```bash
 echo "export PSP_DIR=~/psp" >> ~/.bashrc; . ~/.bashrc
-git clone https://github.com/berghetti/psp.git ${PSP_DIR}
+git clone git@github.com:berghetti/psp.git ${PSP_DIR}
 ./install_requeriments.sh
 ${PSP_DIR}/scripts/setup/base_setup.sh
 ```
