@@ -15,6 +15,7 @@ fi
 # Setup Perséphone
 mkdir ${PSP_DIR}/build && cd ${PSP_DIR}/build
 #cmake -DCMAKE_BUILD_TYPE=Release -DDPDK_MELLANOX_SUPPORT=OFF ${PSP_DIR}
+#cmake -DCMAKE_BUILD_TYPE=DEBUG ${PSP_DIR}
 cmake -DCMAKE_BUILD_TYPE=Release ${PSP_DIR}
 make -j -C ${PSP_DIR}/build
 

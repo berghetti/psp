@@ -126,7 +126,7 @@ int Dispatcher::set_darc() {
             }
             windows[n_windows].group_res[static_cast<int>(group.members[0]->type) - 1] = group.n_resas;
             // Then use the spillway core (potentially the same as latest allocated core)
-            PSP_DEBUG("Assigning spillway core");
+            PSP_DEBUG("Assigning spillway core " << spillway);
             group.res_peers[i] = spillway;
             group.n_resas++;
         } else {
@@ -137,6 +137,7 @@ int Dispatcher::set_darc() {
             }
             windows[n_windows].group_res[static_cast<int>(group.members[0]->type) - 1] = group.n_resas;
         }
+        PSP_DEBUG("Group " << j << " has reserved " << group.n_resas << "cores" );
         PSP_DEBUG("reserved: " << n_resas << "/" << n_workers);
         // Setup stealable peers
         PSP_DEBUG("can steal cores " << n_resas << " to " << n_workers);
@@ -381,17 +382,20 @@ int Dispatcher::dyn_resa_drain_queue(RequestType *&rtype) {
     auto &group = groups[rtype->type_group];
     uint64_t cur_tsc = rdtscp(NULL);
     while (rtype->rqueue_head > rtype->rqueue_tail and free_peers > 0) {
-        PSP_DEBUG(
-            "Dispatching " << rtype->rqueue_head - rtype->rqueue_tail
-            << " " << req_type_str[static_cast<int>(rtype->type)]
-        );
+        //PSP_DEBUG(
+        //    "Dispatching " << rtype->rqueue_head - rtype->rqueue_tail
+        //    << " " << req_type_str[static_cast<int>(rtype->type)]
+        //);
+        //PSP_DEBUG("Reserved cores: " << group.n_resas);
+        //
+
         uint32_t peer_id = MAX_WORKERS + 1;
         // Lookup for a core reserved to this type's group
         for (uint32_t i = 0; i < group.n_resas; ++i) {
             uint32_t candidate = group.res_peers[i];
             if ((1 << candidate) & free_peers) {
                 peer_id = candidate;
-                PSP_DEBUG("Using reserved core " << peer_id);
+                //PSP_DEBUG("Using reserved core " << peer_id << "to request" << req_type_str[static_cast<int>(rtype->type)]);
                 break;
             }
         }
@@ -401,7 +405,7 @@ int Dispatcher::dyn_resa_drain_queue(RequestType *&rtype) {
                 uint32_t candidate = group.stealable_peers[i];
                 if ((1 << candidate) & free_peers) {
                     peer_id = candidate;
-                    PSP_DEBUG("Stealing core " << peer_id);
+                    //PSP_DEBUG("Stealing core " << peer_id);
                     break;
                 }
             }
@@ -410,6 +414,7 @@ int Dispatcher::dyn_resa_drain_queue(RequestType *&rtype) {
         if (peer_id == MAX_WORKERS + 1) {
             return 0;
         }
+
         // Dispatch
         unsigned long req = rtype->rqueue[rtype->rqueue_tail & (RQUEUE_LEN - 1)];
         if (likely(lrpc_ctx.push(req, peer_id)) == 0) {

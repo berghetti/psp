@@ -177,11 +177,8 @@ Psp::Psp(std::string &app_cfg, std::string l) {
                 dpt.first_resa_done = true;
             } else {
                 // Set spillway core (last core)
-                /* FIXME: this is useless here
                 dpt.spillway = dpt.n_workers - 1;
-                PSP_INFO("Setting spillway core on " << dpt.spillway);
-                */
-
+                PSP_INFO("Setting spillway core on " << dpt.spillway);                
                 /* We first start in cFCFS */
                 dpt.dp = Dispatcher::dispatch_mode::CFCFS;
                 dpt.first_resa_done = false;
