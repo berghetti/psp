@@ -54,6 +54,10 @@ T* pktmbuf_struct_read(const rte_mbuf *pkt, size_t offset, T& buf) {
     return (T*)rte_pktmbuf_read(pkt, offset, sizeof(buf), &buf);
 }
 
+#define MIN_PKT_SIZE                                     \
+  ( RTE_ETHER_HDR_LEN + sizeof ( struct rte_ipv4_hdr ) + \
+    sizeof ( struct rte_udp_hdr ) )
+
 int UdpContext::prepare_outbound_packet(unsigned long mbuf, rte_mbuf **pkt_out) {
     rte_mbuf *pkt = static_cast<rte_mbuf *>((void *)mbuf);
     PSP_NOTNULL(ENOMEM, pkt);
@@ -111,8 +115,8 @@ int UdpContext::prepare_outbound_packet(unsigned long mbuf, rte_mbuf **pkt_out) 
     eth_hdr->ether_type = htons(RTE_ETHER_TYPE_IPV4);
     pkt->l2_len = sizeof(*eth_hdr);
 
-    //pkt->data_len = total_len;
-    //pkt->pkt_len = total_len;
+    pkt->data_len = MIN_PKT_SIZE + (sizeof(uint64_t) * 6);
+    pkt->pkt_len = MIN_PKT_SIZE + (sizeof(uint64_t) * 6);
     pkt->nb_segs = 1;
 
 #ifdef NET_DEBUG
