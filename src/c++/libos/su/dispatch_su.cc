@@ -236,9 +236,15 @@ int Dispatcher::enqueue(unsigned long req, uint64_t cur_tsc) {
     } else if (dp == CFCFS) {
         return push_to_rqueue(req, rtypes[type_to_nsorder[static_cast<int>(ReqType::UNKNOWN)]], cur_tsc);
     } else {
-        uint32_t type = *rte_pktmbuf_mtod_offset(
-            static_cast<rte_mbuf *>((void*)req), char *, NET_HDR_SIZE + sizeof(uint32_t)
-        );
+       // uint32_t type = *rte_pktmbuf_mtod_offset(
+       //     static_cast<rte_mbuf *>((void*)req), char *, NET_HDR_SIZE + sizeof(uint32_t)
+       // );
+
+        // AFP type offset
+        uint64_t *data = rte_pktmbuf_mtod_offset (
+            static_cast<rte_mbuf *> ((void *)req), uint64_t *, NET_HDR_SIZE);
+        uint32_t type = data[3];
+
         if (unlikely(type == 0 or type > static_cast<int>(ReqType::LAST)))
             // Push to UNKNOWN queue
             return push_to_rqueue(req, rtypes[n_rtypes], cur_tsc);

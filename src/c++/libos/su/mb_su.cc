@@ -11,15 +11,22 @@ int MbWorker::setup() {
 }
 
 int MbWorker::process_request(unsigned long payload) {
-    char *id_addr = rte_pktmbuf_mtod_offset(
-        static_cast<rte_mbuf *>((void*)payload), char *, NET_HDR_SIZE
-    );
+    // char *id_addr = rte_pktmbuf_mtod_offset(
+    //     static_cast<rte_mbuf *>((void*)payload), char *, NET_HDR_SIZE
+    // );
+    
+    //char *type_addr = id_addr + sizeof(uint32_t);
+    //char *req_addr = type_addr + sizeof(uint32_t) * 2; // also pass request size
 
-    char *type_addr = id_addr + sizeof(uint32_t);
-    char *req_addr = type_addr + sizeof(uint32_t) * 2; // also pass request size
+    uint64_t *data = rte_pktmbuf_mtod_offset (
+    static_cast<rte_mbuf *> ((void *)payload), uint64_t *, NET_HDR_SIZE);
+
+    unsigned request_type = data[3];
+    unsigned service_time_ns = data[5];
 
     //uint32_t spin_time = 1000;
-    unsigned int nloops = *reinterpret_cast<unsigned int *>(req_addr) * FREQ;
+    //unsigned int nloops = *reinterpret_cast<unsigned int *>(req_addr) * FREQ;
+    //unsigned int nloops = service_time_ns * FREQ;
     PSP_DEBUG("spinning for " << nloops);
     /*
     printf("spinning for %u\n", nloops);
@@ -27,7 +34,8 @@ int MbWorker::process_request(unsigned long payload) {
     for (unsigned int i = 0 ; i < 1000; i++) {
         uint64_t start = rdtscp(NULL);
     */
-        fake_work(nloops);
+        //fake_work(nloops);
+        fake_work_ns (service_time_ns);
         //fake_work2(*reinterpret_cast<unsigned int *>(req_addr), FREQ);
     /*
         uint64_t end = rdtscp(NULL);
@@ -37,8 +45,8 @@ int MbWorker::process_request(unsigned long payload) {
     printf("median: %f\n", durations[500]);
     printf("p99.9: %f\n", durations[999]);
     */
-    uint32_t type = *reinterpret_cast<uint32_t *>(type_addr);
-    switch(static_cast<ReqType>(type)) {
+    //uint32_t type = *reinterpret_cast<uint32_t *>(type_addr);
+    switch(static_cast<ReqType>(request_type)) {
         case ReqType::SHORT:
             n_shorts++;
             break;
@@ -51,7 +59,7 @@ int MbWorker::process_request(unsigned long payload) {
     n_requests++;
 
     // Hack response to include completion timestamp
-    *reinterpret_cast<uint32_t *> (req_addr) = 0;
+    //*reinterpret_cast<uint32_t *> (req_addr) = 0;
     return 0;
 }
 

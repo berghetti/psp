@@ -69,19 +69,19 @@ int UdpContext::prepare_outbound_packet(unsigned long mbuf, rte_mbuf **pkt_out) 
     hdr_offset += sizeof(*udp_hdr);
     char *data_start = rte_pktmbuf_mtod_offset(pkt, char *, hdr_offset);
     char *data_offset = data_start + sizeof(uint32_t) * 3; // request ID + resquest type + response size
-    data_offset += *(uint32_t *)data_offset; // payload size
-    size_t data_len = (data_offset - data_start);
-    size_t total_len = (data_offset - pkt_start);
+    //data_offset += *(uint32_t *)data_offset; // payload size
+    //size_t data_len = (data_offset - data_start);
+    //size_t total_len = (data_offset - pkt_start);
 
     // Use our local port as source
     udp_hdr->dst_port = udp_hdr->src_port;
     udp_hdr->src_port = htons(port);
-    uint16_t udp_len = static_cast<uint16_t>(data_len + sizeof(*udp_hdr));
-    udp_hdr->dgram_len = htons(udp_len);
+    //uint16_t udp_len = static_cast<uint16_t>(data_len + sizeof(*udp_hdr));
+    //udp_hdr->dgram_len = htons(udp_len);
     pkt->l4_len = sizeof(*udp_hdr);
 
-    uint16_t ip_len = static_cast<uint16_t>(data_len + sizeof(*udp_hdr) + sizeof(*ip_hdr));
-    ip_hdr->total_length = htons(ip_len);
+    //uint16_t ip_len = static_cast<uint16_t>(data_len + sizeof(*udp_hdr) + sizeof(*ip_hdr));
+    //ip_hdr->total_length = htons(ip_len);
     ip_hdr->version_ihl = IP_VHL_DEF;
     ip_hdr->time_to_live = IP_DEFTTL;
     ip_hdr->next_proto_id = IPPROTO_UDP;
@@ -99,8 +99,8 @@ int UdpContext::prepare_outbound_packet(unsigned long mbuf, rte_mbuf **pkt_out) 
     eth_hdr->ether_type = htons(RTE_ETHER_TYPE_IPV4);
     pkt->l2_len = sizeof(*eth_hdr);
 
-    pkt->data_len = total_len;
-    pkt->pkt_len = total_len;
+    //pkt->data_len = total_len;
+    //pkt->pkt_len = total_len;
     pkt->nb_segs = 1;
 
 #ifdef NET_DEBUG
