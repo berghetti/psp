@@ -9,7 +9,7 @@
 # Setup Perséphone
 mkdir build
 pushd build
-cmake -DCMAKE_BUILD_TYPE=Release -DDPDK_MELLANOX_SUPPORT=OFF ${AE_DIR}/Persephone
+cmake -DCMAKE_BUILD_TYPE=Release -DDPDK_MELLANOX_SUPPORT=OFF ../
 make -j$(NPROC)
 popd
 
