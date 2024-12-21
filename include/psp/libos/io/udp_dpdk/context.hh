@@ -95,8 +95,9 @@ class UdpContext {
                 }
             }
             mbuf_pool = *mempool;
-            rte_ether_unformat_addr(mac.c_str(), &my_mac);
-            rte_eth_dev_mac_addr_add(port_id, my_mac);
+            rte_eth_macaddr_get(0, &my_mac);
+            //rte_ether_unformat_addr(mac.c_str(), &my_mac);
+            //rte_eth_dev_mac_addr_add(port_id, my_mac);
         }
 };
 #endif //PSP_UDP_DPDK_HH_
