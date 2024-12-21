@@ -7,9 +7,11 @@
 #make -j -C ${AE_DIR}/Persephone/submodules/rocksdb static_lib
 
 # Setup Perséphone
-mkdir ${AE_DIR}/Persephone/build && cd ${AE_DIR}/Persephone/build
+mkdir build
+pushd build
 cmake -DCMAKE_BUILD_TYPE=Release -DDPDK_MELLANOX_SUPPORT=OFF ${AE_DIR}/Persephone
-make -j -C ${AE_DIR}/Persephone/build
+make -j$(NPROC)
+popd
 
 # Setup Shinjuku
 #cd ${AE_DIR}/Persephone/submodules/shinjuku
