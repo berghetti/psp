@@ -5,6 +5,14 @@
 
 # Setup RocksDB
 #make -j -C ${AE_DIR}/Persephone/submodules/rocksdb static_lib
+pushd $(dirname $0)/../submodules/rocksdb
+git checkout v5.15.10
+CFLAGS="\
+-Wno-deprecated-copy \
+-Wno-pessimizing-move \
+-Wno-redundant-move" \
+make -j$(nproc) static_lib
+popd
 
 # Setup Perséphone
 mkdir build
