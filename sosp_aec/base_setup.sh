@@ -11,7 +11,7 @@ CFLAGS="\
 -Wno-deprecated-copy \
 -Wno-pessimizing-move \
 -Wno-redundant-move" \
-make -B -j$(nproc) static_lib
+make -j$(nproc) static_lib
 popd
 
 # Setup Perséphone

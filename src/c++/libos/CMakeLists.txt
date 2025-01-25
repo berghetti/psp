@@ -17,3 +17,4 @@ target_link_libraries(psp-libos psp-common boost_program_options boost_context b
 target_add_dpdk(psp-libos)
 target_add_fake_work(psp-libos)
 target_add_rocksdb(psp-libos)
+target_add_leveldb(psp-libos)

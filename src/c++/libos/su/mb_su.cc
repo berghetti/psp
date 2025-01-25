@@ -1,6 +1,10 @@
 #include <psp/libos/su/MbSu.hh>
 #include <arpa/inet.h>
+
+#include <leveldb/c.h>
 #include "fake_work.h"
+
+extern leveldb_t *db;
 
 int MbWorker::setup() {
     assert(n_peers > 0);
@@ -8,6 +12,71 @@ int MbWorker::setup() {
 
     PSP_INFO("Set up Microbenchmark worker " << worker_id);
     return 0;
+}
+
+static void
+do_get ( char *key )
+{
+  size_t len;
+  char *value, *err = NULL;
+
+  leveldb_readoptions_t *readoptions = leveldb_readoptions_create ();
+
+  value = leveldb_get ( db, readoptions, key, strlen ( key ), &len, &err );
+  free ( value );
+  free ( err );
+
+  leveldb_readoptions_destroy ( readoptions );
+}
+
+static void
+do_scan ( void )
+{
+  const char *retr_key;
+  size_t len;
+
+  leveldb_readoptions_t *readoptions = leveldb_readoptions_create ();
+  leveldb_iterator_t *iter = leveldb_create_iterator ( db, readoptions );
+        
+  leveldb_iter_seek_to_first ( iter );
+  while ( leveldb_iter_valid ( iter ) )
+    {
+      retr_key = leveldb_iter_key ( iter, &len );
+      ( void ) retr_key;
+      //#ifndef NDEBUG
+      //      char *err = NULL;
+      //      char *value = leveldb_get ( db, readoptions, retr_key, len, &len,
+      //      &err ); assert ( !err ); printf ( "key:%s value:%s\n", retr_key,
+      //      value );
+      //#endif
+      leveldb_iter_next ( iter );
+    }
+        
+  leveldb_iter_destroy ( iter );
+  leveldb_readoptions_destroy ( readoptions );
+}
+
+static void
+leveldb_server ( void *buff )
+{
+#define GET 1
+#define SCAN 2
+
+  uint64_t *data = (uint64_t*)buff;
+  uint32_t type = data[3];
+  uint64_t key = data[4];
+
+  switch ( type )
+    {
+      case GET:
+        do_get ( ( char * ) &key );
+        break;
+      case SCAN:
+        do_scan ();
+        break;
+      default:
+        assert ( 0 && "Invalid request type" );
+    }
 }
 
 int MbWorker::process_request(unsigned long payload) {
@@ -23,6 +92,9 @@ int MbWorker::process_request(unsigned long payload) {
 
     unsigned request_type = data[3];
     unsigned service_time_ns = data[5];
+        
+    //fake_work_ns (service_time_ns);
+    leveldb_server(data);
 
     //uint32_t spin_time = 1000;
     //unsigned int nloops = *reinterpret_cast<unsigned int *>(req_addr) * FREQ;
@@ -35,7 +107,6 @@ int MbWorker::process_request(unsigned long payload) {
         uint64_t start = rdtscp(NULL);
     */
         //fake_work(nloops);
-        fake_work_ns (service_time_ns);
         //fake_work2(*reinterpret_cast<unsigned int *>(req_addr), FREQ);
     /*
         uint64_t end = rdtscp(NULL);

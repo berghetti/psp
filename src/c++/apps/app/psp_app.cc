@@ -2,12 +2,30 @@
 
 #include <csignal>
 
+#include <leveldb/c.h>
+
+leveldb_t *db;
+
 int main (int argc, char *argv[]) {
     if (TRACE)
         PSP_INFO("Starting PSP application with TRACE on");
 #ifdef LOG_DEBUG
         log_info("Starting PSP application with LOG_DEBUG on");
 #endif
+  
+    // Initialize levelDB
+    leveldb_options_t *options = leveldb_options_create ();
+
+    // open DB
+    char *err = NULL;
+    const char *DBPath = "/tmpfs/my_db";
+    db = leveldb_open ( options, DBPath, &err );
+    if ( err ){
+      fprintf ( stderr,
+                "Error to open database:\n%s\n",
+                err );
+      exit ( 1 );
+    }
 
     PspApp app(argc, argv);
 

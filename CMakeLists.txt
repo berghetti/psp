@@ -30,9 +30,18 @@ function(target_add_fake_work TARGET)
     target_link_libraries(${TARGET} ${FAKE_WORK_DIR}/libfakework.a)
 endfunction(target_add_fake_work)
 
+# Level flags
+set(LEVELDB_DIR ${CMAKE_SOURCE_DIR}/../afp/deps/leveldb)
+set(LEVELDB_LIBRARIES gflags snappy z lz4 bz2)
+function(target_add_leveldb TARGET)
+    target_include_directories(${TARGET} PUBLIC ${LEVELDB_DIR}/include/)
+    target_link_libraries(${TARGET} ${LEVELDB_DIR}/build/libleveldb.a)
+    target_link_libraries(${TARGET} ${LEVELDB_LIBRARIES})
+endfunction(target_add_leveldb)
+
 # RocksDB flags
 set(RDB_DIR ${CMAKE_SOURCE_DIR}/submodules/rocksdb)
-set(RDB_LIBRARIES gflags snappy z lz4)
+#set(RDB_LIBRARIES gflags snappy z lz4)
 set(RDB_LIBRARIES gflags snappy z lz4 bz2 zstd)
 function(target_add_rocksdb TARGET)
     target_include_directories(${TARGET} PUBLIC ${RDB_DIR}/include/rocksdb)
