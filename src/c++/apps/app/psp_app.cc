@@ -48,5 +48,8 @@ int main (int argc, char *argv[]) {
         delete workers[i];
     }
 
+    puts("Closking DB");
+    leveldb_close(db);
+
     return 0;
 }

@@ -57,10 +57,34 @@ do_scan ( void )
 }
 
 static void
+do_range_scan ( void )
+{
+  const char *retr_key;
+  size_t len;
+
+  leveldb_readoptions_t *readoptions = leveldb_readoptions_create ();
+  leveldb_iterator_t *iter = leveldb_create_iterator ( db, readoptions );
+
+  int i = 0;
+  leveldb_iter_seek_to_first ( iter );
+  while ( leveldb_iter_valid ( iter ) && i < 100)
+    {
+      i++;
+      retr_key = leveldb_iter_key ( iter, &len );
+      ( void ) retr_key;
+      leveldb_iter_next ( iter );
+    }
+
+  leveldb_iter_destroy ( iter );
+  leveldb_readoptions_destroy ( readoptions );
+}
+
+static void
 leveldb_server ( void *buff )
 {
 #define GET 1
-#define SCAN 2
+#define SCAN 3
+#define RANGE 2
 
   uint64_t *data = (uint64_t*)buff;
   uint32_t type = data[3];
@@ -74,6 +98,8 @@ leveldb_server ( void *buff )
       case SCAN:
         do_scan ();
         break;
+      case RANGE:
+        do_range_scan ();
       default:
         assert ( 0 && "Invalid request type" );
     }
