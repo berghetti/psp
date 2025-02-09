@@ -50,7 +50,7 @@ int Worker::register_dpt(Worker &dpt) {
 
 int Worker::app_work(int status, unsigned long payload) {
     // Grab the request
-    PSP_OK(process_request(payload));
+    unsigned long type = process_request(payload);
 
     // Enqueue response to outbound queue
     udp_ctx->outbound_queue[udp_ctx->push_head++ & (OUTBOUND_Q_LEN - 1)] = payload;
@@ -64,7 +64,7 @@ int Worker::app_work(int status, unsigned long payload) {
             static_cast<rte_mbuf *>((void*)payload), uint64_t *, NET_HDR_SIZE);
 
         // AFP type offset
-        unsigned long type = data[3];
+        //unsigned long type = data[3];
 
         unsigned long notif = (type << 60) ^ rdtscp(NULL);
         if (unlikely(lrpc_ctx.push(notif, 0) == EAGAIN)) {
