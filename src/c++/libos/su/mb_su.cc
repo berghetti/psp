@@ -138,7 +138,7 @@ MbWorker::process_request (unsigned long payload)
     {   
       type = 1;
     }
-  else if (strncmp (cmd, "LONG", cmd_size))
+  else if (!strncmp (cmd, "LONG", cmd_size))
     {
       type = 2;
     }

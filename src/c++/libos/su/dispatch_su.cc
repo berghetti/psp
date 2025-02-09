@@ -326,7 +326,7 @@ Dispatcher::enqueue (unsigned long req, uint64_t cur_tsc)
         {
           type = 1;
         }
-      else if (strncmp (cmd, "LONG", cmd_size))
+      else if (!strncmp (cmd, "LONG", cmd_size))
         {
           type = 2;
         }

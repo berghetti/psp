@@ -19,6 +19,7 @@ class MbWorker : public Worker {
     private: uint32_t n_requests = 0;
     private: uint32_t n_shorts = 0;
     private: uint32_t n_longs = 0;
+    private: uint32_t n_pages = 0;
     private: int setup() override;
     private: int dequeue(unsigned long *payload);
     private: int work(int status, unsigned long payload) override;
