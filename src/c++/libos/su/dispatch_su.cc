@@ -330,6 +330,8 @@ Dispatcher::enqueue (unsigned long req, uint64_t cur_tsc)
         {
           type = 2;
         }
+      else
+          type = 3;
 
       if (unlikely (type == 0 or type > static_cast<int> (ReqType::LAST)))
         // Push to UNKNOWN queue
