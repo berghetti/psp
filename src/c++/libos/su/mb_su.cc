@@ -142,6 +142,8 @@ MbWorker::process_request (unsigned long payload)
     {
       type = 2;
     }
+  else
+    type = 3;
 
   fake_work_ns (ns_sleep);
   // leveldb_server (data);
