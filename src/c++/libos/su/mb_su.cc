@@ -123,27 +123,27 @@ MbWorker::process_request (unsigned long payload)
   uint64_t *data = rte_pktmbuf_mtod_offset (
       static_cast<rte_mbuf *> ((void *)payload), uint64_t *, NET_HDR_SIZE);
 
-  //unsigned type = data[3];
-  //unsigned ns_sleep = data[5];
+  unsigned type = data[3];
+  unsigned ns_sleep = data[4];
 
   // resp parser
-  char *resp_request = (char *)&data[5];
-  struct resp_client resp;
-  resp_decode (&resp, resp_request);
-  char *cmd = resp.bs[0].string;
-  unsigned cmd_size = resp.bs[0].size;
-  unsigned ns_sleep = atounsigned (resp.bs[1].string);
-  uint32_t type = 0; // UNKNOWN
-  if (!strncmp (cmd, "SHORT", cmd_size))
-    {   
-      type = 1;
-    }
-  else if (!strncmp (cmd, "LONG", cmd_size))
-    {
-      type = 2;
-    }
-  else
-    type = 3;
+  //char *resp_request = (char *)&data[5];
+  //struct resp_client resp;
+  //resp_decode (&resp, resp_request);
+  //char *cmd = resp.bs[0].string;
+  //unsigned cmd_size = resp.bs[0].size;
+  //unsigned ns_sleep = atounsigned (resp.bs[1].string);
+  //uint32_t type = 0; // UNKNOWN
+  //if (!strncmp (cmd, "SHORT", cmd_size))
+  //  {   
+  //    type = 1;
+  //  }
+  //else if (!strncmp (cmd, "LONG", cmd_size))
+  //  {
+  //    type = 2;
+  //  }
+  //else
+  //  type = 3;
 
   fake_work_ns (ns_sleep);
   // leveldb_server (data);
