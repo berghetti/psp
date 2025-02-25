@@ -60,38 +60,14 @@ do_scan (void)
 }
 
 static void
-do_range_scan (void)
-{
-  const char *retr_key;
-  size_t len;
-
-  leveldb_readoptions_t *readoptions = leveldb_readoptions_create ();
-  leveldb_iterator_t *iter = leveldb_create_iterator (db, readoptions);
-
-  int i = 0;
-  leveldb_iter_seek_to_first (iter);
-  while (leveldb_iter_valid (iter) && i < 100)
-    {
-      i++;
-      retr_key = leveldb_iter_key (iter, &len);
-      (void)retr_key;
-      leveldb_iter_next (iter);
-    }
-
-  leveldb_iter_destroy (iter);
-  leveldb_readoptions_destroy (readoptions);
-}
-
-static void
 leveldb_server (void *buff)
 {
 #define GET 1
-#define SCAN 3
-#define RANGE 2
+#define SCAN 2
 
   uint64_t *data = (uint64_t *)buff;
   uint32_t type = data[3];
-  uint64_t key = data[4];
+  uint64_t key = data[5];
 
   switch (type)
     {
@@ -101,8 +77,6 @@ leveldb_server (void *buff)
     case SCAN:
       do_scan ();
       break;
-    case RANGE:
-      do_range_scan ();
     default:
       assert (0 && "Invalid request type");
     }
@@ -123,30 +97,40 @@ MbWorker::process_request (unsigned long payload)
   uint64_t *data = rte_pktmbuf_mtod_offset (
       static_cast<rte_mbuf *> ((void *)payload), uint64_t *, NET_HDR_SIZE);
 
-  unsigned type = data[3];
-  unsigned ns_sleep = data[4];
-
+  unsigned type;
+  unsigned ns_sleep;
+#ifndef RESP
+   type = data[3];
+   ns_sleep = data[4];
+#else
   // resp parser
-  //char *resp_request = (char *)&data[5];
-  //struct resp_client resp;
-  //resp_decode (&resp, resp_request);
-  //char *cmd = resp.bs[0].string;
-  //unsigned cmd_size = resp.bs[0].size;
-  //unsigned ns_sleep = atounsigned (resp.bs[1].string);
-  //uint32_t type = 0; // UNKNOWN
-  //if (!strncmp (cmd, "SHORT", cmd_size))
-  //  {   
-  //    type = 1;
-  //  }
-  //else if (!strncmp (cmd, "LONG", cmd_size))
-  //  {
-  //    type = 2;
-  //  }
-  //else
-  //  type = 3;
+  char *resp_request = (char *)&data[6];
+  struct resp_client resp;
+  resp_decode (&resp, resp_request);
 
+  char *cmd = resp.bs[0].string;
+  unsigned cmd_size = resp.bs[0].size;
+  
+  ns_sleep = atounsigned (resp.bs[1].string);
+  if (!strncmp (cmd, "SHORT", cmd_size))
+    {   
+      type = 1;
+    }
+  else if (!strncmp (cmd, "LONG", cmd_size))
+    {
+      type = 2;
+    }
+  else
+    type = 3;
+
+#endif
+
+
+#ifdef DB
+  leveldb_server (data);
+#else
   fake_work_ns (ns_sleep);
-  // leveldb_server (data);
+#endif
 
   // uint32_t spin_time = 1000;
   // unsigned int nloops = *reinterpret_cast<unsigned int *>(req_addr) * FREQ;
