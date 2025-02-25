@@ -309,29 +309,32 @@ Dispatcher::enqueue (unsigned long req, uint64_t cur_tsc)
       //     static_cast<rte_mbuf *>((void*)req), char *, NET_HDR_SIZE +
       //     sizeof(uint32_t)
       // );
-
+      
       // AFP type offset
        uint64_t *data = rte_pktmbuf_mtod_offset (
           static_cast<rte_mbuf *> ((void *)req), uint64_t *, NET_HDR_SIZE);
-       uint32_t type = data[3];
-      
+
+       uint32_t type;
+#ifndef RESP
+       type = data[3];
+#else 
       // resp parser
-      //char *resp_request = (char *)&data[5];
-      //struct resp_client resp;
-      //resp_decode (&resp, resp_request);
-      //char *cmd = resp.bs[0].string;
-      //unsigned cmd_size = resp.bs[0].size;
-      //uint32_t type = 0; // UNKNOWN
-      //if (!strncmp (cmd, "SHORT", cmd_size))
-      //  {
-      //    type = 1;
-      //  }
-      //else if (!strncmp (cmd, "LONG", cmd_size))
-      //  {
-      //    type = 2;
-      //  }
-      //else
-      //    type = 3;
+      char *resp_request = (char *)&data[6];
+      struct resp_client resp;
+      resp_decode (&resp, resp_request);
+      char *cmd = resp.bs[0].string;
+      unsigned cmd_size = resp.bs[0].size;
+      if (!strncmp (cmd, "SHORT", cmd_size))
+        {
+          type = 1;
+        }
+      else if (!strncmp (cmd, "LONG", cmd_size))
+        {
+          type = 2;
+        }
+      else
+          type = 3;
+#endif
 
       if (unlikely (type == 0 or type > static_cast<int> (ReqType::LAST)))
         // Push to UNKNOWN queue
