@@ -13,19 +13,21 @@ int main(int argc, char *argv[]) {
   log_info("Starting PSP application with LOG_DEBUG on");
 #endif
 
+#ifdef DB
   // Initialize levelDB
   leveldb_options_t *options = leveldb_options_create();
 
   // open DB
-  // char *err = NULL;
-  // const char *DBPath = "/tmpfs/my_db";
-  // db = leveldb_open ( options, DBPath, &err );
-  // if ( err ){
-  //  fprintf ( stderr,
-  //            "Error to open database:\n%s\n",
-  //            err );
-  //  exit ( 1 );
-  //}
+   char *err = NULL;
+   const char *DBPath = "/tmpfs/my_db";
+   db = leveldb_open ( options, DBPath, &err );
+   if ( err ){
+    fprintf ( stderr,
+              "Error to open database:\n%s\n",
+              err );
+    exit ( 1 );
+  }
+#endif
 
   PspApp app(argc, argv);
 
@@ -48,8 +50,10 @@ int main(int argc, char *argv[]) {
     delete workers[i];
   }
 
-  // puts ("Closking DB");
-  // leveldb_close (db);
+#ifdef DB
+   puts ("Closking DB");
+   leveldb_close (db);
+#endif
 
   return 0;
 }
