@@ -36,7 +36,6 @@ network:
 requests:
 - type: SHORT
 - type: LONG
-- type: PAGE
 workers:
   number: 14
   type: MB

@@ -8,12 +8,13 @@ include(dpdk)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
+set(RELEASE_CFLAGS "-Wno-register -O3 -mtune=intel -DNDEBUG" CACHE STRING "C compiler options for release builds")
+
 # DB
 #set(RELEASE_CFLAGS "-Wno-register -O3 -mtune=intel -DNDEBUG -DDB" CACHE STRING "C compiler options for release builds")
-#set(RELEASE_CFLAGS "-Wno-register -O3 -mtune=intel -DNDEBUG" CACHE STRING "C compiler options for release builds")
-
 #RESP
-set(RELEASE_CFLAGS "-Wno-register -O3 -mtune=intel -DNDEBUG -DRESP" CACHE STRING "C compiler options for release builds")
+#set(RELEASE_CFLAGS "-Wno-register -O3 -mtune=intel -DNDEBUG -DRESP" CACHE STRING "C compiler options for release builds")
+
 set(DEBUG_CFLAGS "-ggdb -O0 -fno-omit-frame-pointer -frecord-gcc-switches -lasan -fsanitize=address " CACHE STRING "C compiler options for debug builds")
 set(CMAKE_C_FLAGS_DEBUG ${DEBUG_CFLAGS})
 set(CMAKE_CXX_FLAGS_DEBUG ${DEBUG_CFLAGS})

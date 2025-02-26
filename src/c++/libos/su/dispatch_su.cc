@@ -317,6 +317,10 @@ Dispatcher::enqueue (unsigned long req, uint64_t cur_tsc)
        uint32_t type;
 #ifndef RESP
        type = data[3];
+   // tri-modal zippy
+   // type 1 - short ; type2 - short; type 3 - long
+       if (type > 1)
+         type--;
 #else 
       // resp parser
       char *resp_request = (char *)&data[6];
