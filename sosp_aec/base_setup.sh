@@ -10,6 +10,7 @@ git checkout v5.15.10
 CFLAGS="\
 -Wno-deprecated-copy \
 -Wno-pessimizing-move \
+-Wno-error \
 -Wno-redundant-move" \
 make -j$(nproc) static_lib
 popd
@@ -17,7 +18,7 @@ popd
 # Setup Perséphone
 mkdir build
 pushd build
-cmake -DCMAKE_BUILD_TYPE=Release -DDPDK_MELLANOX_SUPPORT=OFF ../
+cmake -DCMAKE_BUILD_TYPE=Release -DDPDK_MELLANOX_SUPPORT=ON ../
 make -j$(NPROC)
 popd
 
