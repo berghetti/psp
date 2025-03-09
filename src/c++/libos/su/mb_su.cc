@@ -100,13 +100,13 @@ MbWorker::process_request (unsigned long payload)
   unsigned type;
   unsigned ns_sleep;
 #ifndef RESP
-   type = data[3];
-   ns_sleep = data[4];
+  type = data[3];
+  ns_sleep = data[4];
 
-   // tri-modal zippy
-   // type 1 - short ; type2 - short; type 3 - long
-   if (type > 1)
-     type--;
+  // tri-modal zippy
+  // type 1 - short ; type2 - short; type 3 - long
+  // if (type > 1)
+  //  type--;
 #else
   // resp parser
   char *resp_request = (char *)&data[6];
@@ -115,10 +115,10 @@ MbWorker::process_request (unsigned long payload)
 
   char *cmd = resp.bs[0].string;
   unsigned cmd_size = resp.bs[0].size;
-  
+
   ns_sleep = atounsigned (resp.bs[1].string);
   if (!strncmp (cmd, "SHORT", cmd_size))
-    {   
+    {
       type = 1;
     }
   else if (!strncmp (cmd, "LONG", cmd_size))
@@ -129,7 +129,6 @@ MbWorker::process_request (unsigned long payload)
     type = 3;
 
 #endif
-
 
 #ifdef DB
   leveldb_server (data);

@@ -309,19 +309,19 @@ Dispatcher::enqueue (unsigned long req, uint64_t cur_tsc)
       //     static_cast<rte_mbuf *>((void*)req), char *, NET_HDR_SIZE +
       //     sizeof(uint32_t)
       // );
-      
+
       // AFP type offset
-       uint64_t *data = rte_pktmbuf_mtod_offset (
+      uint64_t *data = rte_pktmbuf_mtod_offset (
           static_cast<rte_mbuf *> ((void *)req), uint64_t *, NET_HDR_SIZE);
 
-       uint32_t type;
+      uint32_t type;
 #ifndef RESP
-       type = data[3];
-   // tri-modal zippy
-   // type 1 - short ; type2 - short; type 3 - long
-       if (type > 1)
-         type--;
-#else 
+      type = data[3];
+      // tri-modal zippy
+      // type 1 - short ; type2 - short; type 3 - long
+      // if (type > 1)
+      //  type--;
+#else
       // resp parser
       char *resp_request = (char *)&data[6];
       struct resp_client resp;
@@ -337,7 +337,7 @@ Dispatcher::enqueue (unsigned long req, uint64_t cur_tsc)
           type = 2;
         }
       else
-          type = 3;
+        type = 3;
 #endif
 
       if (unlikely (type == 0 or type > static_cast<int> (ReqType::LAST)))
@@ -385,7 +385,7 @@ Dispatcher::dispatch ()
           PSP_OK (update_darc ());
         }
       //} else if ((cur_tsc - windows[n_windows].tsc) > UPDATE_PERIOD and
-      //windows[n_windows].count > RESA_SAMPLES_NEEDED) {
+      // windows[n_windows].count > RESA_SAMPLES_NEEDED) {
     }
   else if (dp == DARC and likely (dynamic)
            and windows[n_windows].count > RESA_SAMPLES_NEEDED)
